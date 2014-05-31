@@ -8,7 +8,7 @@ use regex::Regex;
 
 use std::os;
 use std::io::File;
-use std::strbuf::StrBuf;
+use std::string::String;
 
 use getopts::getopts;
 use getopts::optflag;
@@ -21,8 +21,8 @@ fn main() {
     let matches = parse_args();
     let filename = matches.free.get(1).as_slice();
     let text = read_text(filename);
-    if matches.opts_present(["b".to_owned(), "x".to_owned(), "s".to_owned(),
-                             "w".to_owned()]) {
+    if matches.opts_present(["b".to_string(), "x".to_string(), "s".to_string(),
+                             "w".to_string()]) {
         if matches.opt_present("b") {
             find_binary(&text);
         }
@@ -70,7 +70,7 @@ fn parse_args() -> Matches {
     matches
 }
 
-fn read_text(filename: &str) -> StrBuf {
+fn read_text(filename: &str) -> String {
     let path = Path::new(filename);
     let mut file = match File::open(&path) {
         Ok(file) => file,
@@ -83,7 +83,7 @@ fn read_text(filename: &str) -> StrBuf {
     }
 }
 
-fn find(text: &StrBuf, regex: &str) {
+fn find(text: &String, regex: &str) {
     let re = match Regex::new(regex) {
         Ok(re) => re,
         Err(e) => fail(e.msg.as_slice())
@@ -93,25 +93,25 @@ fn find(text: &StrBuf, regex: &str) {
     }
 }
 
-fn find_binary(text: &StrBuf) {
+fn find_binary(text: &String) {
     println!("{}", "Binary:");
     find(text, r"[01]{3,}");
     println!("");
 }
 
-fn find_hex(text: &StrBuf) {
+fn find_hex(text: &String) {
     println!("{}", "Hex:");
     find(text, r"(0[xX])?[0-9a-fA-F]{2,}");
     println!("");
 }
 
-fn find_base64(text: &StrBuf) {
+fn find_base64(text: &String) {
     println!("{}", "Base64:");
     find(text, r"(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})");
     println!("");
 }
 
-fn find_words(text: &StrBuf) {
+fn find_words(text: &String) {
     fail!("Not implemented");
     println!("{}", "Words:");
     find(text, r"");
