@@ -1,4 +1,4 @@
-Extended Strings
+Extended Strings [![Build Status](https://travis-ci.org/gsingh93/xstrings.svg?branch=master)](https://travis-ci.org/gsingh93/xstrings)
 ================
 
 This program searches the given file for binary strings, hex strings, base64 strings, and English words. It was created for use in [CTF](https://ctftime.org/ctf-wtf/) competitions, but may have other uses.
