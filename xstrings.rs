@@ -54,7 +54,7 @@ fn parse_args() -> Matches {
 
     let matches = match getopts(args.as_slice(), opts) {
         Ok(matches) => matches,
-        Err(e) => fail(e.to_err_msg().as_slice())
+        Err(e) => fail!(e)
     };
 
     if matches.opt_present("h") {
@@ -77,7 +77,7 @@ fn read_text(filename: &str) -> String {
         Err(e) => fail(e.desc)
     };
 
-    match file.read_to_str() {
+    match file.read_to_string() {
         Ok(text) => text,
         Err(e) => fail(e.desc)
     }
