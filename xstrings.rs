@@ -19,7 +19,7 @@ fn main() {
     parse_args();
 
     let matches = parse_args();
-    let filename = matches.free.get(1).as_slice();
+    let filename = matches.free[1].as_slice();
     let text = read_text(filename);
     if matches.opts_present(["b".to_string(), "x".to_string(), "s".to_string(),
                              "w".to_string()]) {
