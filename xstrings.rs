@@ -54,7 +54,7 @@ fn parse_args() -> Matches {
 
     let matches = match getopts(args.as_slice(), opts) {
         Ok(matches) => matches,
-        Err(e) => fail!(e)
+        Err(e) => panic!(e)
     };
 
     if matches.opt_present("h") {
@@ -112,7 +112,7 @@ fn find_base64(text: &String) {
 }
 
 fn find_words(text: &String) {
-    fail!("Not implemented");
+    panic!("Not implemented");
     println!("{}", "Words:");
     find(text, r"");
     println!("");

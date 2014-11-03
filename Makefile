@@ -4,4 +4,4 @@ xstrings: xstrings.rs
 	rustc xstrings.rs
 
 clean:
-	rm xstrings
+	rm -f xstrings
