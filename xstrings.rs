@@ -21,7 +21,7 @@ fn main() {
     let matches = parse_args();
     let filename = matches.free[1].as_slice();
     let text = read_text(filename);
-    if matches.opts_present(["b".to_string(), "x".to_string(), "s".to_string(),
+    if matches.opts_present(&["b".to_string(), "x".to_string(), "s".to_string(),
                              "w".to_string()]) {
         if matches.opt_present("b") {
             find_binary(&text);
@@ -52,14 +52,14 @@ fn parse_args() -> Matches {
                 optflag("w", "words",  "Output English word matches"),
                 optflag("h", "help",   "Print this help message")];
 
-    let matches = match getopts(args.as_slice(), opts) {
+    let matches = match getopts(args.as_slice(), &opts) {
         Ok(matches) => matches,
         Err(e) => panic!(e)
     };
 
     if matches.opt_present("h") {
         println!("{}", usage("Searches a file for binary, hex, base64, \
-                              and English word strings", opts));
+                              and English word strings", &opts));
         unsafe {libc::exit(1)};
     }
 
