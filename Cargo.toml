@@ -1,0 +1,8 @@
+[package]
+
+name = "xstrings"
+version = "0.0.1"
+authors = ["Gulshan Singh <gulshan@umich.edu>"]
+
+[dependencies]
+regex = "0.1.10"

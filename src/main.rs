@@ -19,27 +19,27 @@ fn main() {
     parse_args();
 
     let matches = parse_args();
-    let filename = matches.free[1].as_slice();
+    let filename = &*matches.free[1];
     let text = read_text(filename);
     if matches.opts_present(&["b".to_string(), "x".to_string(), "s".to_string(),
-                             "w".to_string()]) {
+                              "w".to_string()]) {
         if matches.opt_present("b") {
-            find_binary(&text);
+            find_binary(&*text);
         }
         if matches.opt_present("x") {
-            find_hex(&text);
+            find_hex(&*text);
         }
         if matches.opt_present("s") {
-            find_base64(&text);
+            find_base64(&*text);
         }
         if matches.opt_present("w") {
-            find_words(&text);
+            find_words(&*text);
         }
     } else {
         // find_words(&text);
-        find_hex(&text);
-        find_base64(&text);
-        find_binary(&text);
+        find_hex(&*text);
+        find_base64(&*text);
+        find_binary(&*text);
     }
 }
 
@@ -60,7 +60,7 @@ fn parse_args() -> Matches {
     if matches.opt_present("h") {
         println!("{}", usage("Searches a file for binary, hex, base64, \
                               and English word strings", &opts));
-        unsafe {libc::exit(1)};
+        unsafe {libc::exit(1)}; // TODO: Return option
     }
 
     if matches.free.len() != 2 {
@@ -83,42 +83,42 @@ fn read_text(filename: &str) -> String {
     }
 }
 
-fn find(text: &String, regex: &str) {
+fn find(text: &str, regex: &str) {
     let re = match Regex::new(regex) {
         Ok(re) => re,
-        Err(e) => fail(e.msg.as_slice())
+        Err(e) => fail(&*e.msg)
     };
-    for cap in re.captures_iter(text.as_slice()) {
-        println!("{}", cap.at(0));
+    for cap in re.captures_iter(text) {
+        println!("{:?}", cap.at(0));
     }
 }
 
-fn find_binary(text: &String) {
+fn find_binary(text: &str) {
     println!("{}", "Binary:");
     find(text, r"[01]{3,}");
     println!("");
 }
 
-fn find_hex(text: &String) {
+fn find_hex(text: &str) {
     println!("{}", "Hex:");
     find(text, r"(0[xX])?[0-9a-fA-F]{2,}");
     println!("");
 }
 
-fn find_base64(text: &String) {
+fn find_base64(text: &str) {
     println!("{}", "Base64:");
     find(text, r"(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})");
     println!("");
 }
 
-fn find_words(text: &String) {
+fn find_words(text: &str) {
     panic!("Not implemented");
     println!("{}", "Words:");
     find(text, r"");
     println!("");
 }
 
-fn fail(message: &str) -> !{
+fn fail(message: &str) -> ! {
     println!("Error: {}", message);
-    unsafe { exit(1); }
+    unsafe { exit(1); } // TODO
 }
