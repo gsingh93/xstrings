@@ -1,10 +1,7 @@
-#![feature(core, io, os, rustc_private)]
+#![feature(core, io, os, path, rustc_private)]
 
-extern crate libc;
 extern crate getopts;
 extern crate regex;
-
-use libc::exit;
 
 use regex::Regex;
 
@@ -12,15 +9,15 @@ use std::os;
 use std::old_io::File;
 use std::string::String;
 
-use getopts::getopts;
-use getopts::optflag;
-use getopts::Matches;
-use getopts::usage;
+use getopts::{getopts, optflag, reqopt, usage, Matches};
 
 fn main() {
     parse_args();
 
-    let matches = parse_args();
+    let matches = match parse_args() {
+        Some(matches) => matches,
+        None => return
+    };
     let filename = &*matches.free[1];
     let text = read_text(filename);
     if matches.opts_present(&["b".to_string(), "x".to_string(), "s".to_string(),
@@ -45,13 +42,15 @@ fn main() {
     }
 }
 
-fn parse_args() -> Matches {
+fn parse_args() -> Option<Matches> {
     let args = os::args();
 
     let opts = [optflag("b", "binary", "Output binary matches"),
                 optflag("x", "hex",    "Output word matches"),
                 optflag("s", "base64", "Output base64 matches"),
-                optflag("w", "words",  "Output English word matches"),
+                reqopt("w", "words",  "Output English word matches. \
+                                       Dictionary file should contain one word per line",
+                       "DICTIONARY"),
                 optflag("h", "help",   "Print this help message")];
 
     let matches = match getopts(args.as_slice(), &opts) {
@@ -62,14 +61,14 @@ fn parse_args() -> Matches {
     if matches.opt_present("h") {
         println!("{}", usage("Searches a file for binary, hex, base64, \
                               and English word strings", &opts));
-        unsafe {libc::exit(1)}; // TODO: Return option
+        return None;
     }
 
     if matches.free.len() != 2 {
         fail("program only checks one file, multiple arguments provided");
     }
 
-    matches
+    Some(matches)
 }
 
 fn read_text(filename: &str) -> String {
@@ -121,6 +120,5 @@ fn find_words(text: &str) {
 }
 
 fn fail(message: &str) -> ! {
-    println!("Error: {}", message);
-    unsafe { exit(1); } // TODO
+    panic!("Error: {}", message);
 }
