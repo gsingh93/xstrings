@@ -1,3 +1,5 @@
+#![feature(core, io, os, rustc_private)]
+
 extern crate libc;
 extern crate getopts;
 extern crate regex;
@@ -7,7 +9,7 @@ use libc::exit;
 use regex::Regex;
 
 use std::os;
-use std::io::File;
+use std::old_io::File;
 use std::string::String;
 
 use getopts::getopts;
