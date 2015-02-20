@@ -1,17 +1,17 @@
-#![feature(core, collections, io, os, rustc_private)]
+#![feature(collections, env, process)]
 
 extern crate getopts;
 extern crate regex;
 
 use regex::Regex;
+use std::process::Command;
+use std::env;
 
-use std::os;
-use std::old_io::process::Command;
 use std::string::String;
 
 use std::collections::btree_set::BTreeSet;
 
-use getopts::{getopts, optflag, usage, Matches};
+use getopts::{Options, Matches};
 
 fn main() {
     parse_args();
@@ -46,22 +46,23 @@ fn main() {
 }
 
 fn parse_args() -> Option<Matches> {
-    let args = os::args();
+    let args: Vec<String> = env::args().collect();
 
-    let opts = [optflag("b", "binary",  "Output binary matches"),
-                optflag("x", "hex",     "Output word matches"),
-                optflag("s", "base64",  "Output base64 matches"),
-                optflag("w", "strings", "Output strings using the `strings` command"),
-                optflag("h", "help",    "Print this help message")];
+    let mut opts = Options::new();
+    opts.optflag("b", "binary",  "Output binary matches");
+    opts.optflag("x", "hex",     "Output word matches");
+    opts.optflag("s", "base64",  "Output base64 matches");
+    opts.optflag("w", "strings", "Output strings using the `strings` command");
+    opts.optflag("h", "help",    "Print this help message");
 
-    let matches = match getopts(args.as_slice(), &opts) {
+    let matches = match opts.parse(args.tail()) {
         Ok(matches) => matches,
         Err(e) => panic!(e)
     };
 
     if matches.opt_present("h") {
-        println!("{}", usage("Searches a file for binary, hex, base64, \
-                              and English word strings", &opts));
+        println!("{}", opts.usage("Searches a file for binary, hex, base64, \
+                                   and English word strings"));
         return None;
     }
 
@@ -122,7 +123,7 @@ fn find_base64(set: &BTreeSet<String>) {
 
 fn get_strings(filename: &str) -> BTreeSet<String> {
     let output = Command::new("strings").arg(filename).output();
-    let output = String::from_utf8(output.unwrap().output).unwrap();
+    let output = String::from_utf8(output.unwrap().stdout).unwrap();
     let mut strings = BTreeSet::new();
     for string in output.lines() {
         strings.insert(String::from_str(string));
