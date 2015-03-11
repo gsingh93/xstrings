@@ -5,5 +5,5 @@ version = "0.0.1"
 authors = ["Gulshan Singh <gulshan@umich.edu>"]
 
 [dependencies]
-regex = "0.1.*"
-getopts = "0.2.*"
+regex = "0.*"
+getopts = "0.*"

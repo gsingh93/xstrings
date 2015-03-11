@@ -1,4 +1,4 @@
-#![feature(collections, env, process)]
+#![feature(collections)]
 
 extern crate getopts;
 extern crate regex;
