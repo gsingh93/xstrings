@@ -85,7 +85,7 @@ fn find(text: &str, regex: &str, set: &mut BTreeSet<String>) {
         Err(e) => panic!(e.msg)
     };
     for cap in re.captures_iter(text) {
-        set.insert(String::from_str(cap.at(0).unwrap()));
+        set.insert(cap.at(0).unwrap().to_string());
     }
 }
 
@@ -126,7 +126,7 @@ fn get_strings(filename: &str) -> BTreeSet<String> {
     let output = String::from_utf8(output.unwrap().stdout).unwrap();
     let mut strings = BTreeSet::new();
     for string in output.lines() {
-        strings.insert(String::from_str(string));
+        strings.insert(string.to_string());
     }
     strings
 }
