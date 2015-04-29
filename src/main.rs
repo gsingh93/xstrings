@@ -1,5 +1,3 @@
-#![feature(collections)]
-
 extern crate getopts;
 extern crate regex;
 
@@ -55,7 +53,7 @@ fn parse_args() -> Option<Matches> {
     opts.optflag("w", "strings", "Output strings using the `strings` command");
     opts.optflag("h", "help",    "Print this help message");
 
-    let matches = match opts.parse(args.tail()) {
+    let matches = match opts.parse(&args[1..]) {
         Ok(matches) => matches,
         Err(e) => panic!(e)
     };
